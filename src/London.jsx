@@ -6,7 +6,6 @@ import Windy from "./pictures/windy.jpg";
 import Cloudy from "./pictures/cloudy.jpg";
 import Sky from "./pictures/sky.jpg";
 import Mist from "./pictures/mist.jpg";
-import ReactDOM from 'react-dom';
 import { MdOutlineVisibility } from "react-icons/md";
 import { WiHumidity } from "react-icons/wi";
 import { FaArrowDownShortWide } from "react-icons/fa6";

@@ -26,15 +26,14 @@ const Munchen = () => {
     const [forecastState, setForecastState] = useState(null);
     const [dailyforecastState, setDailyForecastState] = useState(null);
     const API_KEY = "9e98ea3f6af74469a0bc3f1150e1736a&units";
+    const [icon, setIcon] = useState(null);
   useEffect(() => {
-    
       const currentWeather = async (url) => {
         try {  
             const response = await fetch(url);
             const data = await response.json();
             console.log("Response from API:", data);
             setWeatherState(data);
-
             if (data) {
                 const description = data.weather[0]?.description;
                 const container = document.getElementById("Munich");
@@ -61,13 +60,33 @@ const Munchen = () => {
                   description.includes("mist")
                 ) {
                   document.body.style.backgroundImage = `url(${Mist})`;
-                  // container.style.backgroundImage = `url(${Mist})`;
+                  container.style.backgroundImage = `url(${Mist})`;
                 }
           }} catch (error) {
           console.error("Mistake fetching data", error);
         }
-          
-        }
+        
+        if (weatherState) {
+          const description = weatherState.weather[0]?.description;
+          let icon;
+          if (description.includes('sunny') ) {
+            icon = <FaSun />
+          } else if(description.includes('clouds')) {
+            icon = <BsCloudsFill size={35} color="white" className="flex justify-center items-center"/>
+          }else if(description.includes('rain')) {
+            icon = <FaCloudShowersHeavy size={35} color="white"/>
+          }else if(description.includes('sky')) {
+            icon = <IoSunny size={35} color="white"/>
+          }else if(description.includes('mist') || description.includes('haze')) {
+            icon = <IoCloudSharp size={35} color="white"/>
+          }else if(description.includes('snow')) {
+            icon = <BsFillCloudSnowFill size={35} color="white"/>
+          }else if(description.includes('wind')) {
+            icon = <WiCloudyWindy size={35} color="white"/>
+          }
+          setIcon(icon);
+          document.getElementById('icon').innerHTML = icon;
+        }}
         
         const hourlyForecast = async (url) => {
             const response = await fetch(url);
@@ -75,8 +94,6 @@ const Munchen = () => {
              console.log("Dataaaaaaaa", data);
             setDailyForecastState(data.list);
         };
-
-        
           
         const forecast5Day = async (url) => {
             const response = await fetch(url);
@@ -229,7 +246,7 @@ const Munchen = () => {
                       <h3 className="text-lg text-white font-semibold">
                         {forecast.main.temp} C
                       </h3>
-                      <p id="icon"></p>
+                      <p id="icon">{ icon }</p>
                     </div>
                   ) : null;
                 })
@@ -247,12 +264,12 @@ const Munchen = () => {
                   key={date}
                   className="my-3 mx-3 p-3 rounded-lg flex flex-col justify-center items-center hover:bg-[#495057]"
                 >
-                  <h4 className="text-sm text-white font-semibold">Today</h4>
-                  <h5 className="text-xs text-[#0081a7]">{date}</h5>
+                  <h4 className="text-sm text-white font-semibold">{date}</h4>
+                  <h5 className="text-xs text-[#0081a7]">{forecastState[date].weatherDescriptions[4]}</h5>
                   <h3 className="text-lg text-white font-semibold">
                     {forecastState[date].averageTemperature} C
                   </h3>
-                  <p>{forecastState.weather?.icon}</p>
+                  <p id="icon">{ icon }</p>
                 </div>
               ))}
           </div>
